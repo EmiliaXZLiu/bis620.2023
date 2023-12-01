@@ -1,0 +1,28 @@
+name: Test R Package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v1
+
+    - name: Install dependencies
+      run: |
+        install.packages("remotes")
+        remotes::install_deps(dependencies = TRUE)
+
+    - name: Check package
+      run: |
+        R CMD build .
+        R CMD check *tar.gz --no-manual --as-cran
